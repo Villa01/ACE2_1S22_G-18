@@ -1,0 +1,20 @@
+{
+  "name": "practica1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@serialport/parser-readline": "^10.3.0",
+    "express": "^4.17.2",
+    "jsonschema": "^1.2.6",
+    "mongodb": "^4.3.1",
+    "mosca": "^2.8.3",
+    "mqtt": "^4.3.5",
+    "serialport": "^9.2.8"
+  }
+}
