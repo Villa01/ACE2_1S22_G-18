@@ -2,6 +2,7 @@
   "name": "practica1",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -14,7 +15,7 @@
     "@serialport/parser-readline": "^10.3.0",
     "express": "^4.17.2",
     "jsonschema": "^1.2.6",
-    "mongodb": "^4.3.1",
+    "mongodb": "^4.4.0",
     "mosca": "^2.8.3",
     "mqtt": "^4.3.5",
     "serialport": "^9.2.8"
