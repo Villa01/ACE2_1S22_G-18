@@ -74,5 +74,8 @@ void loop()
   Serial.print(lux);
   Serial.println(" lumenes/pie^2");
   delay(2000);
+
+  String json = "{\n\t\"humedad\":" + porcentajeHum;
+  Seria.println(json);
   
 }

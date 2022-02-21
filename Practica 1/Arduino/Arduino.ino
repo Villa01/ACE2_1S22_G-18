@@ -1,7 +1,6 @@
+#include <ArduinoJson.h>
 #include <MQ135.h>
-
 #include <dht.h>
-
 
 dht DHT;
 #define LDR_PIN A0
@@ -34,45 +33,28 @@ void setup(){
 
 void loop()
 {
-  Serial.println("---------------------------");
-  
   //TEMPERATURA//
   DHT.read11(DHT11_PIN);
-  Serial.print("Temperatura = ");
-  Serial.print(DHT.temperature);
-  Serial.println(" C");
-
+  float temp1 = DHT.temperature;
   //TEMPERATURA 2//
   DHT.read11(DHT11_PIN2);
-  Serial.print("Temperatura2 = ");
-  Serial.print(DHT.temperature);
-  Serial.println(" C");
-
-  //HUMEDAD RELATIVA//
-  Serial.print("Humedad ambiente= ");
-  Serial.print(DHT.humidity);
-  Serial.println(" %");
-
-  // Para la calibracion se debe obtener el valor rzero
-  // CO2 //
+  float temp2 = DHT.temperature;
+  //CO2 //
   MQ135 gasSensor = MQ135(A0);
-  Serial.print("CO2 = ");
-  // float rzero = gasSensor.getRZero();
   float ppm = gasSensor.getPPM();
-  Serial.println (ppm);
-
-  // Humedad en la tiera
+  // Humedad en la tierra //
   float humedad = analogRead(TIERA_HUMEDAD);
   float porcentajeHum = map(humedad, 0, 1023, 100, 0);
-  Serial.print("Humedad en la tierra = ");
-  Serial.print(porcentajeHum);
-  Serial.println("%");
-  
-  // Luminocidad
-  Serial.print("Luminocidad = ");
+  // Luminocidad //
   double lux = calcular_int_lum(analogRead(LDR_PIN));
-  Serial.print(lux);
-  Serial.println(" lumenes/pie^2");
-  delay(2000);
   
+  DynamicJsonDocument doc(1024);
+  doc["temp1"] = temp1;
+  doc["temp2"] = temp2;
+  doc["lumin"] = lux;
+  doc["humedad"] = porcentajeHum;
+  doc["co2"] = ppm;
+  serializeJson(doc, Serial);
+  Serial.println();
+  delay(2000);
 }
