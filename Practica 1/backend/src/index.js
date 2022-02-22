@@ -2,7 +2,7 @@
 import express from 'express';
 import SerialPort from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
-import { insertData } from './database.js';
+import { insertData, getLastDoc } from './database.js';
 
 
 
@@ -28,6 +28,14 @@ mySerial.open( () => {
 
 const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 
+let currentData = {
+    temp1: 0,
+    temp2: 0,
+    lumin: 0,
+    humedad: 0,
+    co2: 0,
+    time: '00/00/0000, 0:00:00 AM'
+  }
 
 parser.on('data', async data => {
     if(data){
@@ -35,6 +43,7 @@ parser.on('data', async data => {
             const info = JSON.parse(data.toString());
             info['time'] = new Date().toLocaleString()
             console.log(info)
+            currentData = info
             await insertData(info);
             
         } catch( err ){
@@ -42,4 +51,9 @@ parser.on('data', async data => {
             console.error( err.message )
         }
     }
+});
+
+// Routes
+app.get('/getCurrentData', async(req, res) => {
+    res.json(currentData);
 });

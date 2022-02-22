@@ -34,4 +34,12 @@ const insertData = async (data) =>{
     }
 }
 
-export { insertData };
+const getLastDoc = async () => {
+    await mongoClient.connect();
+    const db = mongoClient.db('practica1')
+    const data = db.collection('data')
+    const array = await data.find({}).toArray()
+    return array.at(-1);
+}
+
+export { insertData, getLastDoc };
