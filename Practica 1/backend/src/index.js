@@ -2,7 +2,7 @@
 import express from 'express';
 import SerialPort from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
-import { insertData, getLastDoc } from './database.js';
+import { insertData, getLastItems } from './database.js';
 
 
 
@@ -22,15 +22,12 @@ const mySerial = new SerialPort(serialPort, {
     baudRate: baudage
 });
 
+// Manejo de error en la conexion
 mySerial.on('error', function (err) {
     console.log(err);
 });
 
 mySerial.open((err) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
     const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 
     parser.on('data', async data => {
@@ -62,6 +59,11 @@ let currentData = {
 }
 
 // Routes
-app.get('/getCurrentData', async (req, res) => {
+app.get('/getCurrentData', (req, res) => {
     res.json(currentData);
+});
+
+app.get('/getData', async (req, res) => {
+    const data = await getLastItems();
+    res.json(data);
 });
