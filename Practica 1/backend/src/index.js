@@ -3,10 +3,12 @@ import express from 'express';
 import SerialPort from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
 import { insertData, getLastItems } from './database.js';
+import cors from 'cors'
 
 
 
 const app = express();
+app.use(cors())
 // Puerto a exponer
 const port = 3000;
 

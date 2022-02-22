@@ -4,7 +4,6 @@
   "description": "",
   "type": "module",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js"
@@ -13,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@serialport/parser-readline": "^10.3.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2",
     "jsonschema": "^1.2.6",
     "mongodb": "^4.4.0",
