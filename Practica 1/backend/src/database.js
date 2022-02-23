@@ -2,7 +2,6 @@
 import { MongoClient, ServerApiVersion  } from 'mongodb';
 
 // Lo siguiente fue realizado con Atlas MongoDB, una base de datos en la nube
-// const uri = "mongodb://mongoadmin:secret@db:27017"
 const uri = "mongodb+srv://DiiAns23:andres23@cluster0.pg03o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
 // Se crea la conexion a Mongo
@@ -42,9 +41,9 @@ const insertData = async (data) =>{
 
 const getLastItems = async () => {
     await mongoClient.connect();
-    const db = mongoClient.db('practica1')
-    const data = db.collection('data')
-    const array = await data.find({}).toArray()
+    const db = mongoClient.db('practica1');
+    const data = db.collection('data');
+    const array = await data.find({}).toArray();
     return array.slice(-20);
 }
 

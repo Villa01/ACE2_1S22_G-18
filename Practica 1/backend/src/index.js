@@ -8,7 +8,7 @@ import cors from 'cors'
 
 
 const app = express();
-app.use(cors())
+app.use(cors());
 // Puerto a exponer
 const port = 3000;
 
@@ -31,7 +31,6 @@ mySerial.on('error', function (err) {
 
 mySerial.open((err) => {
     const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-
     parser.on('data', async data => {
         if (data) {
             try {
@@ -69,3 +68,5 @@ app.get('/getData', async (req, res) => {
     const data = await getLastItems();
     res.json(data);
 });
+
+// Obtener todos los registros
