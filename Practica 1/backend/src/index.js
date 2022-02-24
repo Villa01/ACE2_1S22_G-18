@@ -51,11 +51,11 @@ mySerial.open((err) => {
 
 
 let currentData = {
-    temp1: 0,
-    temp2: 0,
-    lumin: 0,
-    humedad: 0,
-    co2: 0,
+    temp1: 0.0,
+    temp2: 0.0,
+    lumin: 0.0,
+    humedad: 0.0,
+    co2: 0.0,
     time: '00/00/0000, 0:00:00 AM'
 }
 
