@@ -152,7 +152,7 @@ void luminosity1(){
 
 void luminosity(){
   fill(255, 255);
-  text("Luminosidad: " + nuevoLumin + " %", 600, 20);
+  text("Luminosidad: " + nuevoLumin + " ", 600, 20);
   text("Temperatura adentro: " + nuevoTemp2 + " °C", 600, 50);
   
   for (Module mod : mods) {
