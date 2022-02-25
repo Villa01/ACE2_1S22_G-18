@@ -10,10 +10,10 @@ function App() {
   const GetLogs = async () => {
     await axios.get('http://localhost:5000/getData')
       .then((response) => {
-          //console.log(response.data)
-          if (JSON.stringify(data) !== JSON.stringify(response.data)){
-            setData(response.data);
-          }
+          // console.log(response.data)
+          setData(response.data);
+          // if (JSON.stringify(data) !== JSON.stringify(response.data)){
+          // }
       }); 
   }
 
