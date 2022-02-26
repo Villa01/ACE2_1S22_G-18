@@ -56,5 +56,5 @@ void loop()
   doc["co2"] = ppm;
   serializeJson(doc, Serial);
   Serial.println();
-  delay(2000);
+  delay(3000);
 }

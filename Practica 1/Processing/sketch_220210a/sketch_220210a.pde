@@ -63,7 +63,7 @@ void setup(){
   
   frameRate(60); //frames a 60
   obtenerJSON(); //Aca invocamos a obtenerJSON de modo que obtenemos el ultimo valor guardado en la db de mongo, si se quiere ver el cambio volver a correr la app
-  
+  //luminosity();
   luminosity1();
   
 }
@@ -94,6 +94,7 @@ void draw(){
   
   fill(255, 255);
   Co2();
+  luminosity1();
   luminosity();
   humedad();
 
@@ -127,20 +128,23 @@ void Co2(){
   
   
   //fill(verde12, 255);
-  sistemaParticulas.agregarParticula(nuevoTemp1, velocidadAnimacion,(int)(nuevoCo2/10));
+  sistemaParticulas.agregarParticula(nuevoTemp1, velocidadAnimacion,(int)(nuevoCo2/1000));
   
   sistemaParticulas.run(); 
 }
 
 void luminosity1(){
   //noStroke();
-  unit = (int)(100-nuevoLumin);
+  
+  
+  unit = (int)(100-nuevoLumin/5);
   int wideCount = ((width*1/2)) / unit;
   int highCount = ((height*2/5)) / unit;
   count = wideCount * highCount;
   mods = new Module[count];
 
   int index = 0;
+
   for (int y = 0; y < highCount; y++) {
     for (int x = 0; x < wideCount; x++) {
       mods[index++] = new Module(x*unit+600, y*unit+60, unit/2, unit/2, random(0.05, 0.8), unit);
