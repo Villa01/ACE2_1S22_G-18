@@ -46,7 +46,8 @@ mySerial.open((err) => {
                 sendData.suciedad1 = 100-sendData.pureza1
                 sendData.suciedad2 = 100-sendData.pureza2
                 sendData.time = currentData.time
-                if (historial = 0.0){
+                sendData.depth = currentData.depth
+                if (historial === 0.0){
                     sendData.velocidad = 0                    
                     sendData.tiempoLlenado = 0
                 }else{
@@ -89,6 +90,7 @@ let sendData = {
     suciedad2: 0.0,
     pureza2: 0.0,
     humedad: 0.0,
+    depth: 0.0,
     velocidad: 0.0,
     tiempoLlenado: 0.0,    
     time: '00/00/0000, 0:00:00 AM'
