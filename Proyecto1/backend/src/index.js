@@ -38,15 +38,14 @@ mySerial.open((err) => {
                 console.log(info)                
                 
                 currentData = info
+                sendData = {
+                    ...currentData
+                }
 
-
-                sendData.humedad = currentData.humedad
                 sendData.pureza1 =((currentData.red1+currentData.green1+currentData.blue1)/(3*255))*100
                 sendData.pureza2 = ((currentData.red2+currentData.green2+currentData.blue2)/(3*255))*100
                 sendData.suciedad1 = 100-sendData.pureza1
                 sendData.suciedad2 = 100-sendData.pureza2
-                sendData.time = currentData.time
-                sendData.depth = currentData.depth
                 if (historial === 0.0){
                     sendData.velocidad = 0                    
                     sendData.tiempoLlenado = 0
