@@ -16,7 +16,8 @@ app.listen(port, () => console.log('Servidor escuchando en puerto ', port));
 
 const serialPort = 'COM5'; //Puerto COM de arduino
 const baudage = 9600;
-
+const arduinoReqTime = 3;//Tiempo en la que arduino enviara datos a la api
+const alturaRecipienteArduino = 17.5;// altura del recimiente en donde ira el agua limpia
 
 const mySerial = new SerialPort(serialPort, {
     baudRate: baudage
@@ -34,9 +35,29 @@ mySerial.open((err) => {
             try {
                 const info = JSON.parse(data.toString());
                 info['time'] = new Date().toLocaleString()
-                console.log(info)
+                console.log(info)                
+                
                 currentData = info
-                await insertData(info);
+
+
+                sendData.humedad = currentData.humedad
+                sendData.pureza1 =((currentData.red1+currentData.green1+currentData.blue1)/(3*255))*100
+                sendData.pureza2 = ((currentData.red2+currentData.green2+currentData.blue2)/(3*255))*100
+                sendData.suciedad1 = 100-sendData.pureza1
+                sendData.suciedad2 = 100-sendData.pureza2
+                sendData.time = currentData.time
+                if (historial = 0.0){
+                    sendData.velocidad = 0                    
+                    sendData.tiempoLlenado = 0
+                }else{
+                    sendData.velocidad = (currentData.depth - historial)/arduinoReqTime
+                    sendData.tiempoLlenado = alturaRecipienteArduino / sendData.velocidad
+                }
+                historial = currentData.depth
+                
+                
+                await insertData(sendData);
+                
 
             } catch (err) {
                 console.log('ERROR')
@@ -47,19 +68,35 @@ mySerial.open((err) => {
 
 });
 
+let historial = 0.0
+
 
 let currentData = {
-    temp1: 0.0,
-    temp2: 0.0,
-    lumin: 0.0,
     humedad: 0.0,
-    co2: 0.0,
+    red1: 0.0,
+    green1: 0.0,
+    blue1: 0.0,
+    red2: 0.0,
+    green2: 0.0,
+    blue2: 0.0,
+    depth: 0.0,
+    time: '00/00/0000, 0:00:00 AM'
+}
+
+let sendData = {
+    suciedad1: 0.0,
+    pureza1: 0.0,
+    suciedad2: 0.0,
+    pureza2: 0.0,
+    humedad: 0.0,
+    velocidad: 0.0,
+    tiempoLlenado: 0.0,    
     time: '00/00/0000, 0:00:00 AM'
 }
 
 // Routes
 app.get('/getCurrentData', (req, res) => {
-    res.json(currentData);
+    res.json(sendData);
 });
 
 app.get('/getData', async (req, res) => {
