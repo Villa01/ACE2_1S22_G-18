@@ -17,8 +17,8 @@ function App() {
   }
 
   useEffect(()=>{
-    GetLogs();
-  },[data])
+    //GetLogs();
+  },[/*data*/])
   
   return (
     <div className="App">
@@ -45,7 +45,7 @@ function App() {
         <ChartLine className="hijo" data = {data} xAxis = "time" yAxis="suciedad2"/>
       </div>
 
-      <h2>Grafico de cantidad de suciedad despues del filtrado </h2>
+      <h2>Tiempo requerido para la cantidad de agua : {data.tiempoLlenado} </h2>
       
     </div>
   );
