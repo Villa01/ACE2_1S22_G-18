@@ -7,7 +7,7 @@ dht DHT;
 #define MQ135_PIN A1
 #define DHT11_PIN2 A2
 #define TIERA_HUMEDAD A3
-#define DHT11_PIN A4
+#define DHT11_PIN A3
 
 const double k = 5.0/1024; // relacion voltaje valor digital
 const double R2 = 10000; //resistencia usada
