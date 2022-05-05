@@ -4,13 +4,13 @@
 #include <dht.h>
 dht DHT;
 
-SoftwareSerial BT(0, 1);
+//SoftwareSerial BT(18, 19);
 
 
 #define MQ4_PIN A1
 #define DHTPIN 4
 #define VALVPIN 13
-
+#define CHISPAPIN 12
 /************************Hardware Related Macros************************************/
 #define Board ("Arduino MEGA")
 #define Pin (MQ4_PIN) // Analog input 4 of your arduino
@@ -22,6 +22,9 @@ SoftwareSerial BT(0, 1);
 /*****************************Globals***********************************************/
 // Declare Sensor
 MQUnifiedsensor MQ4(Board, Voltage_Resolution, ADC_Bit_Resolution, Pin, Type);
+
+bool abiertovalv ;
+bool abiertochispa;
 
 void setup()
 {
@@ -61,22 +64,62 @@ void setup()
   }
   /*****************************  MQ CAlibration ********************************************/
 
-  Serial.println("|  CH4 |   TEMP |");
+  // Bluetooth
+  Serial2.begin(9600);
 
-  BT.begin(38400);
+    if(!Serial2){
+    Serial.println("No esta listo");
+  } else {
+    Serial.println("Si esta conectado");
+  }
+
+  abiertovalv = false;
+  abiertochispa = false;
 }
 
 
-bool abierto = false;
+
+
+
+String texto = "";
 void loop()
 {
-  //TEMPERATURA//
-//  float t = dht.readTemperature();
 
-  int value = analogRead(DHTPIN);
+  texto = "";
+  int index = 0;
+  while(Serial2.available() > 0){
+    byte b = Serial2.read();
+    
+    texto = b;
+    if (texto == "7"){//chispa 7
+    abiertochispa = !abiertochispa;
+  }
+  if (texto == "119"){//valvula gas 119
+    Serial.println("Abrir valvula");
+    abiertovalv = !abiertovalv;
+  }
+  }
 
-  Serial.println(value);
+    Serial.println(texto);
   
+
+
+  if(abiertovalv){
+    abrirValv();
+  } else {
+    cerrarValv();
+  }
+
+  if(abiertochispa){
+    ChispaOn();
+  } else {
+    ChispaOff();
+  }
+  
+
+  
+  //TEMPERATURA//
+  DHT.read11(DHTPIN);
   // CH4
   MQ4.update();
 //  MQ4.setA(3811.9);
@@ -98,34 +141,50 @@ void loop()
 //  MQ4.setA(30000000);
 //  MQ4.setB(-8.308);               // Configure the equation to to calculate CH4 concentration
 //  float Smoke = MQ4.readSensor(); // Sensor will read PPM concentration using the model, a and b values set previously or from the setup
+
+
+
+
   
-  DHT.read11(DHTPIN);
-  Serial.print("|    ");
-  Serial.print(CH4);
-  Serial.print("    |    ");
-  Serial.print(DHT.temperature);
-  Serial.println("    |");
+  Serial2.print("{ \"CH4\":");
+  Serial2.print(CH4);
+  Serial2.print(", \"temp\":");
+  Serial2.print(DHT.temperature);
+  Serial2.println("}");
 
   //  Liberar Gas
-  if(abierto){
-    cerrarValv();
-  } else {
-    abrirValv();
-  }
 
+ 
+
+//   //from bluetooth to Terminal. 
+// if (BT.available()) 
+//   Serial.write(BT.read()); 
+// //from termial to bluetooth 
+// if (Serial.available()) 
+//   BT.write(Serial.read());
+
+  
   delay(5000);
-
 }
 
 
 void abrirValv(){
-  Serial.println("Abrir valvula");
+//  Serial.println("Abrir valvula");
   digitalWrite(VALVPIN, HIGH);
-  abierto = true;
 }
 
+void ChispaOn(){
+//  Serial.println("Abrir valvula");
+  digitalWrite(CHISPAPIN, HIGH);
+}
+
+
 void cerrarValv(){
-  Serial.println("Cerrar valvula");
+//  Serial.println("Cerrar valvula");
   digitalWrite(VALVPIN, LOW);
-  abierto = false;
+}
+
+void ChispaOff(){
+//  Serial.println("Abrir valvula");
+  digitalWrite(CHISPAPIN, LOW);
 }
