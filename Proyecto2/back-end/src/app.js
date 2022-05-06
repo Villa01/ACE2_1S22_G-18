@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors"
 import morgan from "morgan"
 import SerialPort from "serialport"
-import { ReadlineParser } from '@serialport/parser-readline';
+import {parsers}from "serialport"
 
 const serialPort = 'COM4'; //Puerto COM de arduino
 const baudage = 9600;
@@ -10,6 +10,10 @@ const baudage = 9600;
 const mySerial = new SerialPort(serialPort, {
     baudRate: baudage
 });
+
+const Readline = parsers.Readline;
+const parsrs = new Readline();
+mySerial.pipe(parsrs);
 
 //settings
 const app = express();
@@ -30,15 +34,10 @@ mySerial.on('open', ()=>{
 })
 
 // Conexion con Arduino
-mySerial.open((err) => {
-    const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-    parser.on('data', async data => {
-        if (data) {
-            const info = JSON.parse(data.toString());
-            info['time'] = new Date().toLocaleString()
-            console.log(info)    
-        }
-    });
+mySerial.on('data', async data => {
+    const info = JSON.parse(data.toString());
+    info['time'] = new Date().toLocaleString()
+    console.log(info)
 });
 
 //enpoints
