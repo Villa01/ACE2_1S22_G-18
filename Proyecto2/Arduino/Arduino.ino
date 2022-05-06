@@ -39,26 +39,26 @@ void setup()
   MQ4.setRegressionMethod(1); //_PPM =  a*ratio^b
   MQ4.init();
 
-  Serial.print("Calibrating please wait.");
+//  Serial.print("Calibrating please wait.");
   float calcR0 = 0;
   for (int i = 1; i <= 10; i++)
   {
     MQ4.update(); // Update data, the arduino will read the voltage from the analog pin
     calcR0 += MQ4.calibrate(RatioMQ4CleanAir);
-    Serial.print(".");
+//    Serial.print(".");
   }
   MQ4.setR0(calcR0 / 10);
-  Serial.println("  done!.");
+//  Serial.println("  done!.");
 
   if (isinf(calcR0))
   {
-    Serial.println("Warning: Conection issue, R0 is infinite (Open circuit detected) please check your wiring and supply");
+//    Serial.println("Warning: Conection issue, R0 is infinite (Open circuit detected) please check your wiring and supply");
     while (1)
       ;
   }
   if (calcR0 == 0)
   {
-    Serial.println("Warning: Conection issue found, R0 is zero (Analog pin shorts to ground) please check your wiring and supply");
+//    Serial.println("Warning: Conection issue found, R0 is zero (Analog pin shorts to ground) please check your wiring and supply");
     while (1)
       ;
   }
@@ -68,9 +68,9 @@ void setup()
   Serial2.begin(9600);
 
     if(!Serial2){
-    Serial.println("No esta listo");
+    Serial2.println("No esta listo");
   } else {
-    Serial.println("Si esta conectado");
+    Serial2.println("Si esta conectado");
   }
 
   abiertovalv = false;
@@ -89,21 +89,18 @@ void loop()
   int index = 0;
   while(Serial2.available() > 0){
     byte b = Serial2.read();
-    
+//    Serial.println(b);
     texto = b;
-    if (texto == "7"){//chispa 7
+    if (texto == "239"){//chispa 7
     abiertochispa = !abiertochispa;
   }
-  if (texto == "119"){//valvula gas 119
-    Serial.println("Abrir valvula");
+  if (texto == "3"){//valvula gas 119
+//    Serial.println("Abrir valvula");
     abiertovalv = !abiertovalv;
   }
   }
 
-    Serial.println(texto);
-  
-
-
+//    Serial.println(texto);
   if(abiertovalv){
     abrirValv();
   } else {
@@ -141,30 +138,22 @@ void loop()
 //  MQ4.setA(30000000);
 //  MQ4.setB(-8.308);               // Configure the equation to to calculate CH4 concentration
 //  float Smoke = MQ4.readSensor(); // Sensor will read PPM concentration using the model, a and b values set previously or from the setup
+//  
+//  Serial2.print("{ \"CH4\":");
+//  Serial2.print(String(CH4).c_str());
+//  Serial2.print(", \"temp\":");
+//  Serial2.print(String(DHT.temperature).c_str());
+//  Serial2.print("}\n");
 
-
-
-
-  
-  Serial2.print("{ \"CH4\":");
-  Serial2.print(CH4);
-  Serial2.print(", \"temp\":");
-  Serial2.print(DHT.temperature);
-  Serial2.println("}");
-
+//  Serial2.print("Hola Mundo");
   //  Liberar Gas
-
- 
-
-//   //from bluetooth to Terminal. 
-// if (BT.available()) 
-//   Serial.write(BT.read()); 
-// //from termial to bluetooth 
-// if (Serial.available()) 
-//   BT.write(Serial.read());
-
   
-  delay(5000);
+  DynamicJsonDocument doc(1024);
+  doc["CH4"] = CH4;
+  doc["temp"] = DHT.temperature;
+  serializeJson(doc, Serial);
+  Serial.println();
+  delay(1000);
 }
 
 
