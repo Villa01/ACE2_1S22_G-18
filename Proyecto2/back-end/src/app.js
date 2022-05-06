@@ -11,7 +11,7 @@ const mySerial = new SerialPort(serialPort, {
     baudRate: baudage
 });
 
-//settings
+//settings 
 const app = express();
 app.set("port", 9000);
 
@@ -25,20 +25,24 @@ mySerial.on('error', function (err) {
     console.log(err);
 });
 
-mySerial.on('open', ()=>{
-    console.log('Puerto abierto')
-})
-
-// Conexion con Arduino
 mySerial.open((err) => {
     const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\r\n' }));
     parser.on('data', async data => {
         if (data) {
-            const info = JSON.parse(data.toString());
-            info['time'] = new Date().toLocaleString()
-            console.log(info)    
+            try {
+                const info = JSON.parse(data.toString());
+                info['time'] = new Date().toLocaleString()
+                console.log(info)
+                currentData = info
+                await insertData(info);
+
+            } catch (err) {
+                console.log('ERROR')
+                console.error(err.message)
+            }
         }
     });
+
 });
 
 //enpoints
