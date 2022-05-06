@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors"
 import morgan from "morgan"
 import SerialPort from "serialport"
-import { ReadlineParser } from '@serialport/parser-readline';
+import {parsers}from "serialport"
 
 const serialPort = 'COM4'; //Puerto COM de arduino
 const baudage = 9600;
