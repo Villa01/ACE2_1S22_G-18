@@ -1,0 +1,28 @@
+{
+  "name": "aplicacion.js",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@serialport/parser-readline": "^10.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "jsonschema": "^1.2.6",
+    "mongodb": "^4.4.0",
+    "mosca": "^0.6.0",
+    "mqtt": "^4.3.5",
+    "noble": "^1.9.1",
+    "serialport": "^9.2.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
