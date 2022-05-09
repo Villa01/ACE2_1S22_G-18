@@ -4,16 +4,12 @@ import { ReadlineParser } from '@serialport/parser-readline';
 import { insertData, getLastItems } from './database.js';
 import cors from 'cors'
 
-
 const app = express();
 app.use(cors());
 // Puerto a exponer
 const port = 5000;
 
-app.listen(port, () => console.log('Servidor escuchando en puerto ', port));
-
-// Conexion con Arduino
-
+/*/ Conexion con Arduino
 const serialPort = 'COM5'; //Puerto COM de arduino
 const baudage = 9600;
 
@@ -40,7 +36,7 @@ parser.on('data', data => {
         let insertedData = { ...info, time: new Date().toLocaleString() }
         insertData(insertedData);
     }
-});
+});*/
 
 
 // mySerial.on('data',(data) => {
@@ -48,12 +44,6 @@ parser.on('data', data => {
 //     // console.log('data ', data)
 // });
 
-
-let currentData = {
-    CH4: 0.0,
-    temp: 0.0,
-    time: '00/00/0000, 0:00:00 AM'
-}
 
 let sendData = {
     CH4: 0.0,
@@ -66,9 +56,14 @@ app.get('/getCurrentData', (req, res) => {
     res.json(sendData);
 });
 
+// Obtener todos los registros
 app.get('/getData', async (req, res) => {
     const data = await getLastItems();
     res.json(data);
 });
 
-// Obtener todos los registros
+app.listen(port, () => console.log('Servidor escuchando en puerto ', port));
+
+
+
+

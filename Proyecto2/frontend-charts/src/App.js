@@ -7,9 +7,9 @@ function App() {
   const [data, setData] = useState([]);
 
   const GetLogs = async () => {
-    await axios.get('http://localhost:9000/getData')
+    await axios.get('http://localhost:5000/getData')
       .then((response) => {
-          // console.log(response.data)
+          console.log(response.data)
           setData(response.data);
           // if (JSON.stringify(data) !== JSON.stringify(response.data)){
           // }
@@ -29,13 +29,13 @@ function App() {
       
       <h2>Grafico de Temperatura </h2>
       <div className='padre'>
-        <ChartLine className="hijo" data = {data} xAxis = "time" yAxis = "temperatura" />
+        <ChartLine className="hijo" data = {data} xAxis = "time" yAxis = "temp" />
       </div>
 
       <br/>
       <h2>Grafico de Metano </h2>
       <div className='padre'>
-        <ChartLine className="hijo" data = {data} xAxis = "time" yAxis = "metano" />
+        <ChartLine className="hijo" data = {data} xAxis = "time" yAxis = "CH4" />
       </div>
       
     </div>
