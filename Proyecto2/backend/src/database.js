@@ -22,7 +22,7 @@ const insertData = async (data) =>{
                 console.log('No se encontro la base de datos')
                 return;
             }
-            let dbo = db.db('Proyecto2');
+            let dbo = db.db('Proyecto3');
             dbo.collection('Data').insertOne( data, (err, res) => {
                 if(err) {
                     console.error(err);
@@ -40,7 +40,7 @@ const insertData = async (data) =>{
 
 const getLastItems = async () => {
     await mongoClient.connect();
-    const db = mongoClient.db('Proyecto1');
+    const db = mongoClient.db('Proyecto3');
     const data = db.collection('Data');
     const array = await data.find({}).toArray();
     return array.slice(-20);

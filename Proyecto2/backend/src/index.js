@@ -14,13 +14,14 @@ app.listen(port, () => console.log('Servidor escuchando en puerto ', port));
 
 // Conexion con Arduino
 
-const serialPort = 'COM7'; //Puerto COM de arduino
+const serialPort = 'COM5'; //Puerto COM de arduino
 const baudage = 9600;
-const arduinoReqTime = 3;//Tiempo en la que arduino enviara datos a la api
-const alturaRecipienteArduino = 17.5;// altura del recimiente en donde ira el agua limpia
 
 const mySerial = new SerialPort(serialPort, {
-    baudRate: baudage
+    baudRate: baudage,
+    parity:'none',
+    stopBits: 1,
+    dataBits:8
 });
 
 // Manejo de error en la conexion
@@ -28,70 +29,35 @@ mySerial.on('error', function (err) {
     console.log(err);
 });
 
-mySerial.open((err) => {
-    const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-    parser.on('data', async data => {
-        if (data) {
-            try {
-                const info = JSON.parse(data.toString());
-                info['time'] = new Date().toLocaleString()
-                console.log(info)                
-                
-                currentData = info
-                sendData = {
-                    ...currentData
-                }
+mySerial.on('open', () => {
+    console.log(`Puerto ${serialPort} abierto`)
+})
 
-                sendData.pureza1 =((currentData.red1+currentData.green1+currentData.blue1)/(3*255))*100
-                sendData.pureza2 = ((currentData.red2+currentData.green2+currentData.blue2)/(3*255))*100
-                sendData.suciedad1 = 100-sendData.pureza1
-                sendData.suciedad2 = 100-sendData.pureza2
-                if (historial === 0.0){
-                    sendData.velocidad = 0                    
-                    sendData.tiempoLlenado = 0
-                }else{
-                    sendData.velocidad = (currentData.depth - historial)/arduinoReqTime
-                    sendData.tiempoLlenado = alturaRecipienteArduino / sendData.velocidad
-                }
-                historial = currentData.depth
-                
-                
-                await insertData(sendData);
-                
-
-            } catch (err) {
-                console.log('ERROR')
-                console.error(err.message)
-            }
-        }
-    });
-
+const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\n' }));
+parser.on('data', data => {
+    if (data) {
+        const info = JSON.parse(data.toString());
+        let insertedData = { ...info, time: new Date().toLocaleString() }
+        insertData(insertedData);
+    }
 });
 
-let historial = 0.0
+
+// mySerial.on('data',(data) => {
+//     console.log(data.toString())
+//     // console.log('data ', data)
+// });
 
 
 let currentData = {
-    humedad: 0.0,
-    red1: 0.0,
-    green1: 0.0,
-    blue1: 0.0,
-    red2: 0.0,
-    green2: 0.0,
-    blue2: 0.0,
-    depth: 0.0,
+    CH4: 0.0,
+    temp: 0.0,
     time: '00/00/0000, 0:00:00 AM'
 }
 
 let sendData = {
-    suciedad1: 0.0,
-    pureza1: 0.0,
-    suciedad2: 0.0,
-    pureza2: 0.0,
-    humedad: 0.0,
-    depth: 0.0,
-    velocidad: 0.0,
-    tiempoLlenado: 0.0,    
+    CH4: 0.0,
+    temp: 0.0,
     time: '00/00/0000, 0:00:00 AM'
 }
 

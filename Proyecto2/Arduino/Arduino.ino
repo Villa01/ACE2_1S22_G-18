@@ -91,10 +91,11 @@ void loop()
     byte b = Serial2.read();
 //    Serial.println(b);
     texto = b;
-    if (texto == "239"){//chispa 7
+    Serial.println(b);
+    if (texto == "7"){//chispa 7
     abiertochispa = !abiertochispa;
   }
-  if (texto == "3"){//valvula gas 119
+  if (texto == "119"){//valvula gas 119
 //    Serial.println("Abrir valvula");
     abiertovalv = !abiertovalv;
   }
@@ -145,12 +146,13 @@ void loop()
 //  Serial2.print(String(DHT.temperature).c_str());
 //  Serial2.print("}\n");
 
-//  Serial2.print("Hola Mundo");
+//  Serial2.println("Hola Mundo");
   //  Liberar Gas
   
   DynamicJsonDocument doc(1024);
   doc["CH4"] = CH4;
   doc["temp"] = DHT.temperature;
+  serializeJson(doc, Serial2);
   serializeJson(doc, Serial);
   Serial.println();
   delay(1000);
